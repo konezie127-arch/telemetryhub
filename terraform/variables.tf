@@ -27,3 +27,9 @@ variable "github_repo" {
   type    = string
   default = "konezie127-arch/telemetryhub"
 }
+
+variable "github_oidc_sub_prefix" {
+  description = "Prefixe du sub OIDC GitHub (identifiants immuables du proprietaire et du depot)"
+  type        = string
+  default     = "repo:konezie127-arch@262629818/telemetryhub@1473818248"
+}

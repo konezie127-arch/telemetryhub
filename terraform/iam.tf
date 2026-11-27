@@ -45,11 +45,12 @@ data "aws_iam_policy_document" "github_assume" {
       values   = ["sts.amazonaws.com"]
     }
 
-    # Seul le dépôt ET la branche main peuvent assumer ce rôle
+    # Seul le dépôt ET la branche main peuvent assumer ce rôle.
+    # Le préfixe contient les identifiants numériques immuables (propriétaire et dépôt).
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${var.github_repo}:ref:refs/heads/main"]
+      values   = ["${var.github_oidc_sub_prefix}:ref:refs/heads/main"]
     }
   }
 }
