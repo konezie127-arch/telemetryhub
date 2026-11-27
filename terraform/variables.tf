@@ -22,3 +22,8 @@ variable "public_key_path" {
   type    = string
   default = "~/.ssh/telemetryhub-tf.pub"
 }
+
+variable "github_repo" {
+  type    = string
+  default = "konezie127-arch/telemetryhub"
+}
