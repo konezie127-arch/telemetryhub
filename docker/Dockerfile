@@ -6,13 +6,19 @@ RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 # --- Étape 2 : image finale, minimale ---
 FROM python:3.12-slim
+
+# Correctifs de sécurité du système (l'image de base peut avoir du retard)
+RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
 ARG APP_VERSION=dev
 ARG GIT_SHA=local
+LABEL org.opencontainers.image.source="https://github.com/konezie127-arch/telemetryhub"
 ENV APP_VERSION=$APP_VERSION \
     GIT_SHA=$GIT_SHA \
     DB_PATH=/data/telemetry.db \
     PYTHONUNBUFFERED=1
-LABEL org.opencontainers.image.source="https://github.com/konezie127-arch/telemetryhub"
 
 RUN useradd --uid 10001 --create-home appuser \
     && mkdir /data && chown appuser /data
