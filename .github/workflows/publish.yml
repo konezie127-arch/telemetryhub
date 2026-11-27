@@ -37,6 +37,7 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile
+          pull: true
           load: true
           tags: ${{ env.IMAGE }}:scan
           build-args: |
@@ -47,7 +48,7 @@ jobs:
 
       # 2) Scan de sécurité : bloque la publication en cas de faille critique/haute corrigeable
       - name: Scan de vulnérabilités (Trivy)
-        uses: aquasecurity/trivy-action@v0.36.0 
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.IMAGE }}:scan
           severity: CRITICAL,HIGH
@@ -60,6 +61,7 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile
+          pull: true
           push: true
           tags: |
             ${{ env.IMAGE }}:${{ env.SHORT_SHA }}
