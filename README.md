@@ -10,3 +10,13 @@ CI/CD automatisée (GitHub Actions, Docker, Terraform, Ansible).
 ## Tests
     pip install -r requirements-dev.txt
     pytest -v
+
+## Objet
+Ajout du pipeline CI GitHub Actions.
+
+## Contenu
+- Lint (ruff) et tests (pytest) à chaque push/PR
+- Build de l'image Docker + test de fumée sur /health
+
+## Vérification
+Les checks `test` et `docker-build` doivent passer au vert.
