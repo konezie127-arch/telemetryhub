@@ -1,13 +1,11 @@
-name: Build & Publish
+name: Build, Publish & Deploy
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:
 
 permissions:
   contents: read
-  packages: write          # nécessaire pour pousser sur GHCR
 
 env:
   IMAGE: ghcr.io/${{ github.repository }}
@@ -15,13 +13,20 @@ env:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      tag: ${{ steps.version.outputs.short_sha }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Variables de version
+        id: version
         run: |
           echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
           echo "APP_VERSION=1.0.${{ github.run_number }}" >> "$GITHUB_ENV"
+          echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - uses: docker/setup-buildx-action@v3
 
@@ -31,7 +36,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 1) Construction locale pour pouvoir scanner AVANT de publier
       - name: Build (local)
         uses: docker/build-push-action@v6
         with:
@@ -46,7 +50,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # 2) Scan de sécurité : bloque la publication en cas de faille critique/haute corrigeable
       - name: Scan de vulnérabilités (Trivy)
         uses: aquasecurity/trivy-action@v0.36.0
         with:
@@ -55,7 +58,6 @@ jobs:
           ignore-unfixed: true
           exit-code: "1"
 
-      # 3) Publication (réutilise le cache, donc rapide)
       - name: Publier l'image
         uses: docker/build-push-action@v6
         with:
@@ -70,3 +72,12 @@ jobs:
             APP_VERSION=${{ env.APP_VERSION }}
             GIT_SHA=${{ env.SHORT_SHA }}
           cache-from: type=gha
+
+  deploy:
+    needs: publish          # ne se lance que si build, scan et publication ont réussi
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/deploy.yml
+    with:
+      tag: ${{ needs.publish.outputs.tag }}
