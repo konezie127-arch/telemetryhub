@@ -10,3 +10,6 @@ data/
 *.tfvars
 !*.tfvars.example
 crash.log
+ansible/inventory.ini
+tfplan
+*.tfplan
