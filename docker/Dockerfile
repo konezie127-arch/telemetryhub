@@ -12,6 +12,7 @@ ENV APP_VERSION=$APP_VERSION \
     GIT_SHA=$GIT_SHA \
     DB_PATH=/data/telemetry.db \
     PYTHONUNBUFFERED=1
+LABEL org.opencontainers.image.source="https://github.com/konezie127-arch/telemetryhub"
 
 RUN useradd --uid 10001 --create-home appuser \
     && mkdir /data && chown appuser /data
