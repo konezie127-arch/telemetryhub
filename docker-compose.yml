@@ -1,0 +1,28 @@
+services:
+  app:
+    image: ${APP_IMAGE:-telemetryhub:local}
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-dev}
+        GIT_SHA: ${GIT_SHA:-local}
+    volumes:
+      - app_data:/data
+    expose:
+      - "8000"
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  app_data:
