@@ -7,3 +7,6 @@ data/
 .terraform/
 *.tfstate*
 .env
+*.tfvars
+!*.tfvars.example
+crash.log
