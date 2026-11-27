@@ -3,7 +3,6 @@ from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 
 from fastapi import FastAPI, HTTPException, Query
-from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from app import db
 from app.models import ReadingIn, ReadingOut, Stats
@@ -16,8 +15,6 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="TelemetryHub", lifespan=lifespan)
-# Securite : n'accepter que les noms d'hote connus ("testserver" = client de test)
-app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "testserver"])
 
 
 def row_to_reading(row) -> ReadingOut:
