@@ -14,7 +14,7 @@ cat > docs/mesures.md <<'EOF'
 | Scenario | Duree | Resultat |
 |---|---|---|
 | Rollback manuel (workflow Deploy, tag precedent) | 29 s | Service restaure, verifie par /version |
-| Version defaillante (TrustedHost derriere Nginx) | ... s | Detection, rollback automatique, job rouge, service intact |
+| Version defaillante (TrustedHost derriere Nginx) | 158 s (run complet) | Detection, rollback automatique, job rouge, service intact |
 | Tag inexistant | ... s | Rollback automatique, statut SSM Failed |
 
 ## Reconstruction complete (0 action manuelle)
@@ -31,8 +31,8 @@ cat > docs/mesures.md <<'EOF'
 ## Disponibilite pendant un deploiement
 | Mesure | Valeur |
 |---|---|
-| Requetes OK / indisponibles | ... / ... |
-| Duree d'indisponibilite estimee | ... s |
+| Requetes OK / indisponibles (2 deploiements successifs) | 173 / 4 (code 502) |
+| Duree d'indisponibilite estimee | environ 1 s par deploiement (sondes toutes les 0,5 s) |
 
 ## Securite verifiee
 - OIDC : refus depuis une branche autre que main (Deploy #6)
